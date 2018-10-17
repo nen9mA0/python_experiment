@@ -6,7 +6,13 @@ import decimal as dc
 digit = 3                                     #有效数字
 preci = '0.01'                                     #精确度
                                        
-_WIN32_ = 1     
+_WIN_ = 1     
+
+def set_win():
+    _WIN_ = 0
+
+def set_unix():
+    _WIN_ = 1
 
 def format(input , flag , num=0):                      #格式化（有效数字）                                                                      
     global preci
@@ -24,23 +30,25 @@ def format(input , flag , num=0):                      #格式化（有效数字
             dc.getcontext().prec = digit
 
     elif flag=='+' or flag=='-' or flag==1:
+        tmp = dc.getcontext().prec
+        dc.getcontext().prec = 30                   #防止报有效数字位数不够的错误
         if num != 0:
             ret = str( dc.Decimal(cache).quantize(dc.Decimal(str(num))) )
         else:
             ret = str( dc.Decimal(cache).quantize(dc.Decimal(preci)) )
+        dc.getcontext().prec = tmp
     else:
         print "ERROR:parameter flag error,cannot do format"
-
     return ret
 
 def set_digit( num , echo=1 ):
     global digit
 
     digit = int(num)
-    dc.getcontext(),prec = digit
+    dc.getcontext().prec = digit
     if echo==1:
         mystr = "有效数字位数为 %d"
-        if _WIN32_:
+        if _WIN_:
             mystr = mystr.decode('UTF-8').encode('GBK')
         print(mystr %(digit))
 
@@ -48,12 +56,17 @@ def set_digit( num , echo=1 ):
 def set_preci( num , echo=1 ):
     global preci
 
-    preci = int(num)
+    preci = str(float(num))
     if echo==1:
         mystr = "精确到小数点后 %d 位"
-        if _WIN32_:
+        if _WIN_:
             mystr = mystr.decode('UTF-8').encode('GBK')
-        print(mystr %(preci))
+        i = 0
+        j = float(preci)
+        while j < 1:
+            i += 1
+            j *= 10
+        print(mystr %(i))
 
 def avr( num=[] ,flag=1 ,echo=1 ):                     #平均值
     sum=0.0
@@ -68,7 +81,7 @@ def avr( num=[] ,flag=1 ,echo=1 ):                     #平均值
     if echo ==1:
         mystr1 = "平均值为%f"
         mystr2 = "修约后平均值为%s"
-        if _WIN32_:
+        if _WIN_:
             mystr1 = mystr1.decode('UTF-8').encode('GBK')
             mystr2 = mystr2.decode('UTF-8').encode('GBK')
         print(mystr1 %(cache))
@@ -107,7 +120,7 @@ def deviation( num=[] ,flag=1 ,echo=1):                #标准差
     if echo==1:
         mystr1 = "标准差为 %f"
         mystr2 = "修约后标准差为 %f"
-        if _WIN32_:
+        if _WIN_:
             mystr1 = mystr1.decode('UTF-8').encode('GBK')
             mystr2 = mystr2.decode('UTF-8').encode('GBK')
         print(mystr1 %(cache))
@@ -175,8 +188,8 @@ def uncertainty( data ,delta,echo=1):                #合成不确定度
     x = math.sqrt(xb**2 + xa**2)
 
     if echo==1:
-        mystr = "仪器不确定度为 %f"]
-        if _WIN32_:
+        mystr = "仪器不确定度为 %f"
+        if _WIN_:
             mystr = mystr.decode('UTF-8').encode('GBK')
         print(mystr %(x))
     return x
