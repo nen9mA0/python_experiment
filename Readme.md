@@ -1,6 +1,6 @@
 # python物理实验计算库
 
-该库提供了物理实验中常见的一些数据处理的函数
+该轮子提供了物理实验中常见的一些数据处理的函数
 
 ## format
 
@@ -56,3 +56,57 @@
 
 **deviation(num=[], flag=1, echo=1)**
 
+求标准差
+
+* num        list类型，待求的数据
+* flag          为1时返回修约后结果，否则返回未修约结果
+* echo        是否回显
+
+返回值：**float**
+
+## sigmax
+
+**sigmax(num=[], flag=1, echo=1)**
+
+求A类不确定度
+
+* num         list类型，待求数据
+* flag           是否对标准差使用修正参数进行修正
+* echo         是否回显
+  返回值：**float**
+
+## datacheck
+
+**datacheck(num=[], echo=1)**
+
+使用3sigma原则筛值
+
+* num        list类型，待筛数据
+* echo       是否回显
+
+返回值：筛完数据后的list
+
+
+
+## uncertainty
+
+**uncertainty(data, delta, echo=1)**
+
+求不确定度
+
+* data        list类型，待求数据
+* delta       B类不确定度中的仪器不确定度
+* echo       是否回显
+
+返回值：**float**
+
+## least_square
+
+**least_squre(x, y)**
+
+最小二乘法
+
+* x             list类型，最小二乘的x值
+* y             list类型，最小二乘的y值
+
+返回值：[k,b]，k为斜率b为截距

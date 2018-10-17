@@ -105,55 +105,18 @@ def deviation( num=[] ,flag=1 ,echo=1):                #标准差
    # cache_b = round(cache_b,)
 
     if echo==1:
-        print("%f" %(cache))
-        print("%f" %(cache_b))
+        mystr1 = "标准差为 %f"
+        mystr2 = "修约后标准差为 %f"
+        if _WIN32_:
+            mystr1 = mystr1.decode('UTF-8').encode('GBK')
+            mystr2 = mystr2.decode('UTF-8').encode('GBK')
+        print(mystr1 %(cache))
+        print(mystr2 %(cache_b))
 
     if flag==1:
         return cache_b
     else:   
         return cache
-
-
-
-def myinput ():                 
-    global preci
-    global digit
-    n=0
-    isint = True
-
-    print "???????????"
-    n = int(raw_input())
-
-    mydata=[]
-    for i in range(0,n):
-        tmp = raw_input()
-        mydata.append(float(tmp))
-        if len(tmp) < digit:
-            for i in tmp:
-                if i=='.':
-                    isint = False
-                    break
-            if isint == False:
-                digit = len(tmp) -1
-            else:
-                digit = len(tmp)
-    
-        for i in tmp:
-            if i == '.':
-                precinow = len(tmp)-tmp.index(i)
-                if precinow < preci:
-                    preci = precinow
-
-        if preci == 100:
-            preci = 1
-
-    print("????")
-    for i in mydata:
-        print("%f " %(i))
-    print("??锟斤拷????锟斤拷????%d" %(digit))
-    print("?????锟斤拷????%d" %(preci))
-    return mydata
-
 
 
 def sigmax( num=[] ,flag=1 ,echo=1):                   #A类不确定度Xa
@@ -167,6 +130,8 @@ def sigmax( num=[] ,flag=1 ,echo=1):                   #A类不确定度Xa
             print "value t no found"
         else:
             temp = t[n]
+            if echo==1:
+                print("t = %f" %temp)
 
     cache = deviation(num,1,0)
     cache = temp * cache / math.sqrt(n)
@@ -192,7 +157,8 @@ def datacheck( num=[] , echo=1 ):                #3sigma筛值
         if i>upper or i<lower:
             flag = True
             num.remove(i)
-            print "remove" %i
+            if echo ==1:
+                print "remove" %i
     
     if flag == True:
         num = datacheck(num)
@@ -209,7 +175,10 @@ def uncertainty( data ,delta,echo=1):                #合成不确定度
     x = math.sqrt(xb**2 + xa**2)
 
     if echo==1:
-        print("锟斤拷确锟斤拷锟斤拷为%f" %(x))
+        mystr = "仪器不确定度为 %f"]
+        if _WIN32_:
+            mystr = mystr.decode('UTF-8').encode('GBK')
+        print(mystr %(x))
     return x
 
 
@@ -233,7 +202,4 @@ def least_square(x,y):
     b = sumy/lenx - k*sumx/lenx
     return [k,b]
 
-
-
-if __name__ == "__main__":              #test
 
