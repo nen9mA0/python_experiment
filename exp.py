@@ -14,7 +14,7 @@ def set_win():
 def set_unix():
     _WIN_ = 1
 
-def format(input , flag , num=0):                      #格式化（有效数字）                                                                      
+def format(input , flag , type=1, num=0):                      #格式化（有效数字）                                                                      
     global preci
     global digit
 
@@ -39,7 +39,10 @@ def format(input , flag , num=0):                      #格式化（有效数字
         dc.getcontext().prec = tmp
     else:
         print "ERROR:parameter flag error,cannot do format"
-    return ret
+    if type == 1:
+        return float(ret)
+    else:
+        return ret
 
 def set_digit( num , echo=1 ):
     global digit
@@ -61,12 +64,15 @@ def set_preci( num , echo=1 ):
         mystr = "精确到小数点后 %d 位"
         if _WIN_:
             mystr = mystr.decode('UTF-8').encode('GBK')
-        i = 0
-        j = float(preci)
-        while j < 1:
-            i += 1
-            j *= 10
-        print(mystr %(i))
+        print(mystr %get_preci())
+
+def get_preci():
+    i = 0
+    j = float(preci)
+    while j < 1:
+        i += 1
+        j *= 10
+    return i
 
 def avr( num=[] ,flag=1 ,echo=1 ):                     #平均值
     sum=0.0
@@ -76,11 +82,12 @@ def avr( num=[] ,flag=1 ,echo=1 ):                     #平均值
         sum+=float(i)
 
     cache=sum/n
-    cache_b = format(cache,'+')
+    cache_b = format(cache,'+',0)
 
     if echo ==1:
         mystr1 = "平均值为%f"
-        mystr2 = "修约后平均值为%s"
+        mystr2 = "修约后平均值为 %s"
+
         if _WIN_:
             mystr1 = mystr1.decode('UTF-8').encode('GBK')
             mystr2 = mystr2.decode('UTF-8').encode('GBK')
@@ -109,17 +116,18 @@ def deviation( num=[] ,flag=1 ,echo=1):                #标准差
     
     sum=0
     for i in num:
-        cache_b = float(format(i-myavr,'-'))
-        sum += float(format(cache_b**2,'*'))
+        cache_b = format(i-myavr,'-')
+        sum += format(cache_b**2,'*')
 
     cache_b = sum  / (n-1)
     
     cache_b = math.sqrt(cache_b)
    # cache_b = round(cache_b,)
+    cache_b = format(cache_b,'*',0)
 
     if echo==1:
         mystr1 = "标准差为 %f"
-        mystr2 = "修约后标准差为 %f"
+        mystr2 = "修约后标准差为 %s"
         if _WIN_:
             mystr1 = mystr1.decode('UTF-8').encode('GBK')
             mystr2 = mystr2.decode('UTF-8').encode('GBK')
@@ -127,7 +135,7 @@ def deviation( num=[] ,flag=1 ,echo=1):                #标准差
         print(mystr2 %(cache_b))
 
     if flag==1:
-        return cache_b
+        return float(cache_b)
     else:   
         return cache
 
@@ -135,12 +143,13 @@ def deviation( num=[] ,flag=1 ,echo=1):                #标准差
 def sigmax( num=[] ,flag=1 ,echo=1):                   #A类不确定度Xa
     n = len(num)
     
-    if flag==1:
+    if flag==0:
         temp = 1
     else:
         t = [0,0,1.84,1.32,1.20,1.14,1.11,1.09,1.08,1.07,1.06,1.05,1.03]
         if n>=len(t) or n==1 or n==0:
             print "value t no found"
+            temp = 1
         else:
             temp = t[n]
             if echo==1:
